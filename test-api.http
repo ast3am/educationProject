@@ -1,0 +1,54 @@
+//создаем трех пользователей
+POST http://localhost:8080/create
+Content-Type: application/json; charset=utf-8
+
+{"name":"John","age":"24","friends":[]}
+###
+POST http://localhost:8080/create
+Content-Type: application/json; charset=utf-8
+
+{"name":"Nate","age":"25","friends":[]}
+###
+POST http://localhost:8080/create
+Content-Type: application/json; charset=utf-8
+
+{"name":"Helen","age":"18","friends":[]}
+###
+
+//друзья
+POST http://localhost:8080/make_friends
+Content-Type: application/json
+
+{"source_id":"1","target_id":"2"}
+###
+POST http://localhost:8080/make_friends
+Content-Type: application/json
+
+{"source_id":"1","target_id":"3"}
+###
+POST http://localhost:8080/make_friends
+Content-Type: application/json
+
+{"source_id":"2","target_id":"3"}
+###
+
+//удалем пользователя
+DELETE http://localhost:8080/user
+Content-Type: application/json
+
+{"target_id":"2"}
+###
+
+//возвращаем друзей
+GET http://localhost:8080/friends/1
+Content-Type: application/json
+
+{}
+
+###
+//обновить возраст
+PUT http://localhost:8080/1
+Content-Type: application/json; charset=utf-8
+
+{"new_age":"30"}
+###
