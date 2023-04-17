@@ -11,6 +11,7 @@ import (
 	"net/http"
 )
 
+//go:generate mockery --name Repository
 type Repository interface {
 	Create(ctx context.Context, user *models.UserModel) error
 	MakeFriends(ctx context.Context, sourceId, targetId string) (string, error)
@@ -61,7 +62,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u.ID = h.repository.MakeID()
-	h.repository.Create(context.TODO(), &u)
+	h.repository.Create(r.Context(), &u)
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("New user created with id:" + u.ID))
@@ -106,7 +107,7 @@ func (h *handler) MakeFriends(w http.ResponseWriter, r *http.Request) {
 
 	// создание друзей
 
-	text, err := h.repository.MakeFriends(context.TODO(), mf.SourceID, mf.TargetID)
+	text, err := h.repository.MakeFriends(r.Context(), mf.SourceID, mf.TargetID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -147,7 +148,7 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	// удаляем пользователя
 
-	text, err := h.repository.Delete(context.TODO(), id.TargetID)
+	text, err := h.repository.Delete(r.Context(), id.TargetID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -170,7 +171,7 @@ func (h *handler) GetFriends(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	friends, err := h.repository.FindFriend(context.TODO(), id)
+	friends, err := h.repository.FindFriend(r.Context(), id)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -225,7 +226,7 @@ func (h *handler) UpdateAge(w http.ResponseWriter, r *http.Request) {
 
 	// обновление возраста
 
-	err = h.repository.UpdateAge(context.TODO(), id, newAge.NewAge)
+	err = h.repository.UpdateAge(r.Context(), id, newAge.NewAge)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
